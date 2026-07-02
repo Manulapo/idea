@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 
 class Idea extends Model
 {
@@ -34,5 +35,21 @@ class Idea extends Model
     public function steps(): HasMany
     {
         return $this->hasMany(Step::class);
+    }
+
+    public static function statusCounts()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        // select the count of each statuses
+        $count = $user->ideas()
+            ->selectRaw('status,count(*) as count') // select status and their count from DB
+            ->groupBy('status') // group all the results by statuses
+            ->pluck('count', 'status'); // take the count value and assign the "status" key
+
+        // return a collection
+        return collect(IdeaStatus::cases())->mapWithKeys(fn ($status) => [
+            $status->value => $count->get($status->value, 0),
+        ])->put('all', $user->ideas()->count());
     }
 }

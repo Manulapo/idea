@@ -1,6 +1,15 @@
 <x-layout.layout>
     <x-header title="Ideas" description="All the ideas for this project" />
 
+    <div class="mt-4">
+        <a href="/ideas" class="btn {{ request('status') === null ? 'btn-primary' : 'btn-outlined' }}">All</a>
+        @foreach (App\IdeaStatus::cases() as $status)
+            <a href="/ideas?status={{ $status->value }}"
+                class="btn {{ request('status') === $status->value ? 'btn-primary' : 'btn-outlined' }}">{{ $status->label() }}
+                <span class="text-xs pl-3">{{ $statusCounts->get($status->value) }}</span></a>
+        @endforeach
+    </div>
+
     <div class="mt-10">
         <div class="grid md:grid-cols-2 gap-6">
             @forelse ($ideas as $idea)
