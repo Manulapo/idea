@@ -17,8 +17,8 @@ use Tests\TestCase;
 */
 
 pest()->extend(TestCase::class)
- ->use(RefreshDatabase::class) // automatically refreshes the database after each test
-    ->in('Feature', 'Unit');
+    ->use(RefreshDatabase::class) // automatically refreshes the database after each test
+    ->in('Feature', 'Unit', 'Browser');
 
 /*
 |--------------------------------------------------------------------------
