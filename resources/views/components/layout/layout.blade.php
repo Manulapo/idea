@@ -9,16 +9,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="text-foreground bg-background overflow-hidden">
+<body class="text-foreground bg-background">
     <x-layout.nav />
     <main class="max-w-7xl mx-auto px-6 py-5 ">
         {{ $slot }}
     </main>
-
-    <div class="" x-data="{ greeting: 'Hello', show: true }" x-show="show">
-        <p x-show="show" x-text="greeting"></p>
-        <button @click="show = !show">Toggle</button>
-    </div>
 
     {{-- with "success" from the login response + the message value --}}
     @session('success')
