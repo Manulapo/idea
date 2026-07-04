@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateIdea;
 use App\Http\Requests\FilterIdeasRequest;
 use App\Http\Requests\StoreIdeaRequest;
 use App\Http\Requests\UpdateIdeaRequest;
+use App\IdeaStatus;
 use App\Models\Idea;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -23,8 +25,9 @@ class IdeaController extends Controller
 
         $ideas = $user
             ->ideas()
-            ->when($request->validated('status'), fn ($query, $status) => $query
-                ->where('status', $status))
+            ->when(in_array($request->validated('status'), IdeaStatus::values()), fn ($query) => $query
+                ->where('status', $request->validated('status')))
+            ->latest()
             ->get();
 
         return view('ideas.index', [
@@ -44,9 +47,11 @@ class IdeaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreIdeaRequest $request): void
+    public function store(StoreIdeaRequest $request, CreateIdea $createIdea)
     {
-        //
+        $createIdea->handle($request->validated());
+
+        return redirect()->route('ideas.index')->with('success', 'Idea created successfully.');
     }
 
     /**
@@ -78,8 +83,10 @@ class IdeaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Idea $idea): void
+    public function destroy(Idea $idea)
     {
-        //
+        $idea->delete();
+
+        return redirect()->route('ideas.index');
     }
 }

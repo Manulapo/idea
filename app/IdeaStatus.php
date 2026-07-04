@@ -19,4 +19,14 @@ enum IdeaStatus: string
             self::COMPLETED => 'Completed',
         };
     }
+
+    public static function values(): array
+    {
+        $values = [];
+        foreach (self::cases() as $case) {
+            $values[] = $case->value;
+        }
+
+        return $values;
+    }
 }

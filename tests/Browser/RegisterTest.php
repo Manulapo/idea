@@ -8,7 +8,7 @@ it('registers a user', function () {
         ->fill('password', '123456789')
         ->fill('password_confirmation', '123456789')
         ->click('Create account')
-        ->assertPathIs('/');
+        ->assertPathIs('/ideas');
 
     // assert that the user is authenticated
     $this->assertAuthenticated();

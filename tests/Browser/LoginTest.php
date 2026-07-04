@@ -15,7 +15,7 @@ it('logs in a user', function () {
         ->fill('email', 'johndoe@something.com')
         ->fill('password', '123456789')
         ->click('@login')
-        ->assertPathIs('/');
+        ->assertPathIs('/ideas');
 
     // assert that the user is authenticated
     $this->assertAuthenticated();
@@ -35,7 +35,7 @@ it('logs out a user', function () {
 
     visit('/')
         ->click('@logout')
-        ->assertPathIs('/');
+        ->assertPathIs('/login');
 
     // assert that the user is no longer authenticated
     $this->assertGuest();
