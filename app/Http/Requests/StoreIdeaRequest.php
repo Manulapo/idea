@@ -8,6 +8,7 @@ use App\IdeaStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Override;
 
 class StoreIdeaRequest extends FormRequest
 {
@@ -45,6 +46,7 @@ class StoreIdeaRequest extends FormRequest
      * Prepare data with defaults for validation.
      * It is important to prepare the data before validation to ensure that optional fields have default values, preventing validation errors for missing fields.
      */
+    #[Override]
     protected function prepareForValidation(): void
     {
         $this->merge([

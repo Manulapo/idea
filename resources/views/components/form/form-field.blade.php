@@ -6,15 +6,35 @@
 ])
 
 <div class="space-y-3">
-    <label for="{{ $name }}" class="label text-start">{{ $label }}</label>
+    <label
+        for="{{ $name }}"
+        class="label text-start"
+    >{{ $label }}</label>
     @if ($type === 'textarea')
-        <textarea name="{{ $name }}" id="{{ $name }}" class="textarea" {{ $attributes }}>{{ old($name, $value) }}</textarea>
+        <textarea
+            {{ $attributes->merge(['class' => 'textarea']) }}
+            name="{{ $name }}"
+            id="{{ $name }}"
+            {{ $attributes }}
+        >{{ old($name, $value) }}</textarea>
     @elseif ($type === 'file')
-        <input type="{{ $type }}" name="{{ $name }}" id="{{ $name }}" class="input" multiple
-            {{ $attributes }} />
+        <input
+            {{ $attributes->merge(['class' => 'input']) }}
+            type="{{ $type }}"
+            name="{{ $name }}"
+            id="{{ $name }}"
+            multiple
+            {{ $attributes }}
+        />
     @else
-        <input type="{{ $type }}" name="{{ $name }}" id="{{ $name }}" class="input"
-            value="{{ old($name, $value) }}" {{ $attributes }} />
+        <input
+            {{ $attributes->merge(['class' => 'input']) }}
+            type="{{ $type }}"
+            name="{{ $name }}"
+            id="{{ $name }}"
+            value="{{ old($name, $value) }}"
+            {{ $attributes }}
+        />
     @endif
 </div>
 @error($name)

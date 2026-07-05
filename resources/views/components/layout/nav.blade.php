@@ -6,13 +6,24 @@
         </div>
         <div class="flex gap-x-5 items-center">
             @auth
-                <x-form.form action="/logout" method="DELETE">
-                    <button type="submit" class="text-red-400" data-test="logout">Log Out</button>
+                <a href="/profile">Profile</a>
+                <x-form.form
+                    action="/logout"
+                    method="DELETE"
+                >
+                    <button
+                        type="submit"
+                        class="text-red-400"
+                        data-test="logout"
+                    >Log Out</button>
                 </x-form.form>
             @endauth
             @guest
                 <a href="/login">Sign in</a>
-                <a href="/register" class="btn">Register</a>
+                <a
+                    href="/register"
+                    class="btn"
+                >Register</a>
             @endguest
         </div>
     </div>
