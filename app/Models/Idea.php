@@ -7,6 +7,7 @@ namespace App\Models;
 use App\IdeaStatus;
 use Database\Factories\IdeaFactory;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -53,5 +54,11 @@ class Idea extends Model
         return collect(IdeaStatus::cases())->mapWithKeys(fn ($status) => [
             $status->value => $count->get($status->value, 0),
         ])->put('all', $user->ideas()->count());
+    }
+
+    public function formattedDescription(): Attribute
+    {
+        // this is a getter for the description attribute, it allows you to format the description before returning it. in this case, we are just returning the description as is, but you can add any formatting you want here.
+        return Attribute::get(fn ($value, $attributes) => str($attributes['description'])->markdown());
     }
 }

@@ -142,10 +142,13 @@
                             data-test="add-step-button"
                             aria-label="Add step to list"
                         >
-                            <x-icons.close
+                            <iconify-icon
+                                icon="lucide:plus"
                                 class="rotate-45"
+                                width="24"
+                                height="24"
                                 aria-hidden="true"
-                            />
+                            ></iconify-icon>
                             <span
                                 class="sr-only"
                                 data-test="add-step"
@@ -188,7 +191,12 @@
                                     data-test="remove-step-button"
                                     :aria-label="'Remove step ' + step.description"
                                 >
-                                    <x-icons.close aria-hidden="true" />
+                                    <iconify-icon
+                                        icon="lucide:x"
+                                        width="20"
+                                        height="20"
+                                        aria-hidden="true"
+                                    ></iconify-icon>
                                     <span
                                         class="sr-only"
                                         data-test="remove-step"
@@ -227,10 +235,13 @@
                             data-test="add-link-button"
                             aria-label="Add link to list"
                         >
-                            <x-icons.close
+                            <iconify-icon
+                                icon="lucide:plus"
                                 class="rotate-45"
+                                width="24"
+                                height="24"
                                 aria-hidden="true"
-                            />
+                            ></iconify-icon>
                             <span
                                 class="sr-only"
                                 data-test="add-link"
@@ -268,7 +279,12 @@
                                     data-test="remove-link-button"
                                     :aria-label="'Remove link ' + link"
                                 >
-                                    <x-icons.close aria-hidden="true" />
+                                    <iconify-icon
+                                        icon="lucide:x"
+                                        width="20"
+                                        height="20"
+                                        aria-hidden="true"
+                                    ></iconify-icon>
                                     <span class="sr-only">Remove link</span>
                                 </button>
                             </div>
@@ -288,7 +304,7 @@
                 <button
                     type="submit"
                     class="btn h-10"
-                    data-test="{{ $type === 'create' ? 'create-idea-button' : 'update-idea-button' }}"
+                    data-test="submit-idea-button"
                 >{{ $idea->exists ? 'Update idea' : 'Create idea' }}</button>
             </div>
         </div>

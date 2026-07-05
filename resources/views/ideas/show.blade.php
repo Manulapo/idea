@@ -6,7 +6,12 @@
                 href="{{ route('ideas.index') }}"
                 class="flex items-center gap-2"
             >
-                <x-icons.arrow-back class="text-foreground" />
+                <iconify-icon
+                    icon="lucide:arrow-left"
+                    class="text-foreground"
+                    width="24"
+                    height="24"
+                ></iconify-icon>
                 Back to Ideas</a>
 
             <div class="gap-x-3 flex items-center">
@@ -15,7 +20,12 @@
                     class="btn btn-outlined flex items-center"
                     @click="$dispatch('open-modal', 'edit-idea')"
                 >
-                    <x-icons.external class="text-foreground size-1" />
+                    <iconify-icon
+                        icon="lucide:external-link"
+                        class="text-foreground mr-2"
+                        width="16"
+                        height="16"
+                    ></iconify-icon>
                     Edit Idea</button>
                 <x-form.form
                     action="{{ route('ideas.destroy', $idea->id) }}"
@@ -32,7 +42,7 @@
 
         <div class="py-8 space-y-6">
             @if ($idea->image_path)
-                <div class="rounded-lg overflow-hidden relative">
+                <div class="rounded-lg overflow-hidden relative group">
                     <img
                         src="{{ asset('storage/' . $idea->image_path) }}"
                         alt="{{ $idea->title }}"
@@ -40,9 +50,16 @@
                     >
                     <button
                         form="delete-image-form"
-                        class="btn flex items-center absolute right-4 bottom-4"
+                        class="btn flex items-center absolute right-4 bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                         type="submit"
                     >
+                        <iconify-icon
+                            icon="lucide:trash-2"
+                            class="mr-2"
+                            width="20"
+                            height="20"
+                            aria-hidden="true"
+                        ></iconify-icon>
                         Remove Image</button>
                 </div>
             @endif
@@ -58,10 +75,11 @@
             </div>
             @if ($idea->description)
                 <x-card
+                    is="div"
                     href="{{ '/ideas/' . $idea->id }}"
                     flex="flex flex-col gap-2"
                 >
-                    <p class="text-foreground max-w-none cursor-pointer">{{ $idea->description }}</p>
+                    <p class="text-foreground max-w-none cursor-pointer prose">{!! $idea->formattedDescription !!}</p>
                 </x-card>
             @endif
 
@@ -106,10 +124,12 @@
                                 target="_blank"
                                 class="flex items-center gap-2 space-y-2 mb-2"
                             >
-                                <x-icons.external
-                                    class="fill-primary"
-                                    :size="18"
-                                />
+                                <iconify-icon
+                                    icon="lucide:external-link"
+                                    class="text-primary"
+                                    width="20"
+                                    height="20"
+                                ></iconify-icon>
                                 <p class="text-primary max-w-none cursor-pointer">{{ $link }}</p>
                             </x-card>
                         @endforeach
