@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\CreateIdea;
+use App\Actions\UpdateIdea;
 use App\Http\Requests\FilterIdeasRequest;
 use App\Http\Requests\StoreIdeaRequest;
-use App\Http\Requests\UpdateIdeaRequest;
 use App\IdeaStatus;
 use App\Models\Idea;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class IdeaController extends Controller
 {
@@ -59,6 +60,10 @@ class IdeaController extends Controller
      */
     public function show(Idea $idea)
     {
+        Gate::authorize('workWith', $idea);
+
+        $idea->load('steps');
+
         return view('ideas.show', [
             'idea' => $idea,
         ]);
@@ -75,9 +80,15 @@ class IdeaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateIdeaRequest $request, Idea $idea): void
+    public function update(StoreIdeaRequest $request, Idea $idea, UpdateIdea $updateIdea)
     {
-        //
+        Gate::authorize('workWith', $idea);
+
+        $attributes = $request->validated();
+
+        $updateIdea->handle($attributes, $idea);
+
+        return redirect()->route('ideas.show', $idea)->with('success', 'Idea updated successfully.');
     }
 
     /**
@@ -85,7 +96,12 @@ class IdeaController extends Controller
      */
     public function destroy(Idea $idea)
     {
+        // the gate facade autorize method work s well with the policy file. In that IdeaPolicy.php i set the workWith method to check if the user is the owner of the idea. If not, it will throw an exception and return a 403 error.
+        Gate::authorize('workWith', $idea);
         $idea->delete();
+
+        // we can also use the can method directly into the route or the blade file to check if the user can work with the idea. If not, it will return a 403 error.
+        // Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy'])->can('workWith', 'idea');
 
         return redirect()->route('ideas.index');
     }

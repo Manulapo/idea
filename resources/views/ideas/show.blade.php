@@ -2,24 +2,48 @@
     <div class="py-8 max-w-4xl mx-auto">
         <div class="flex justify-between items-center gap-2">
 
-            <a href="{{ route('ideas.index') }}" class="flex items-center gap-2">
+            <a
+                href="{{ route('ideas.index') }}"
+                class="flex items-center gap-2"
+            >
                 <x-icons.arrow-back class="text-foreground" />
                 Back to Ideas</a>
 
             <div class="gap-x-3 flex items-center">
-                <button class="btn btn-outlined flex items-center"> <x-icons.external class="text-foreground size-1" />
+                <button
+                    x-data
+                    class="btn btn-outlined flex items-center"
+                    @click="$dispatch('open-modal', 'edit-idea')"
+                >
+                    <x-icons.external class="text-foreground size-1" />
                     Edit Idea</button>
-                <x-form.form action="{{ route('ideas.destroy', $idea->id) }}" method="DELETE" class="inline">
-                    <button type="submit" class="btn btn-outlined text-red-400">Delete</button>
+                <x-form.form
+                    action="{{ route('ideas.destroy', $idea->id) }}"
+                    method="DELETE"
+                    class="inline"
+                >
+                    <button
+                        type="submit"
+                        class="btn btn-outlined text-red-400"
+                    >Delete</button>
                 </x-form.form>
             </div>
         </div>
 
         <div class="py-8 space-y-6">
             @if ($idea->image_path)
-                <div class="rounded-lg overflow-hidden">
-                    <img src="{{ asset('storage/' . $idea->image_path) }}" alt="{{ $idea->title }}"
-                        class="w-full h-90 object-cover">
+                <div class="rounded-lg overflow-hidden relative">
+                    <img
+                        src="{{ asset('storage/' . $idea->image_path) }}"
+                        alt="{{ $idea->title }}"
+                        class="w-full h-90 object-cover"
+                    >
+                    <button
+                        form="delete-image-form"
+                        class="btn flex items-center absolute right-4 bottom-4"
+                        type="submit"
+                    >
+                        Remove Image</button>
                 </div>
             @endif
             <h1 class="text-foreground text-3xl font-bold mb-6">{{ $idea->title }}</h1>
@@ -32,9 +56,14 @@
                     <span>{{ $idea->created_at->diffForHumans() }}</span>
                 </div>
             </div>
-            <x-card href="{{ '/ideas/' . $idea->id }}" flex="flex flex-col gap-2">
-                <p class="text-foreground max-w-none cursor-pointer">{{ $idea->description }}</p>
-            </x-card>
+            @if ($idea->description)
+                <x-card
+                    href="{{ '/ideas/' . $idea->id }}"
+                    flex="flex flex-col gap-2"
+                >
+                    <p class="text-foreground max-w-none cursor-pointer">{{ $idea->description }}</p>
+                </x-card>
+            @endif
 
             @if ($idea->steps && count($idea->steps) > 0)
                 <div>
@@ -42,11 +71,20 @@
 
                     <div>
                         @foreach ($idea->steps as $step)
-                            <x-form.form method="PATCH" action="{{ route('steps.update', $step->id) }}"
-                                class="mb-2 w-full max-w-full">
-                                <x-card target="_blank" class="flex items-center gap-2 mb-2">
-                                    <button type="submit" aria-role="checkbox"
-                                        class="size-5 flex items-center justify-center rounded-lg text-card  border {{ $step->completed ? 'bg-primary' : 'border border-primary' }}">&check;</button>
+                            <x-form.form
+                                method="PATCH"
+                                action="{{ route('steps.update', $step->id) }}"
+                                class="mb-2 w-full max-w-full"
+                            >
+                                <x-card
+                                    target="_blank"
+                                    class="flex items-center gap-2 mb-2"
+                                >
+                                    <button
+                                        type="submit"
+                                        aria-role="checkbox"
+                                        class="size-5 flex items-center justify-center rounded-lg text-card  border {{ $step->completed ? 'bg-primary' : 'border border-primary' }}"
+                                    >&check;</button>
                                     <p class="{{ $step->completed ? 'line-through text-muted-foreground' : '' }}">
                                         {{ $step->description }}
                                     </p>
@@ -63,9 +101,15 @@
 
                     <div>
                         @foreach ($idea->links as $link)
-                            <x-card href="{{ $link }}" target="_blank"
-                                class="flex items-center gap-2 space-y-2 mb-2">
-                                <x-icons.external class="fill-primary" :size="18" />
+                            <x-card
+                                href="{{ $link }}"
+                                target="_blank"
+                                class="flex items-center gap-2 space-y-2 mb-2"
+                            >
+                                <x-icons.external
+                                    class="fill-primary"
+                                    :size="18"
+                                />
                                 <p class="text-primary max-w-none cursor-pointer">{{ $link }}</p>
                             </x-card>
                         @endforeach
@@ -74,4 +118,23 @@
             @endif
         </div>
     </div>
+
+    <x-idea-modal
+        name="edit-idea"
+        title="Edit Idea"
+        type="edit"
+        :idea="$idea"
+    />
+
+    @if ($idea->exists)
+        <form
+            id="delete-image-form"
+            action="{{ route('ideas.delete-image', $idea->id) }}"
+            method="POST"
+            class="hidden"
+        >
+            @csrf
+            @method('DELETE')
+        </form>
+    @endif
 </x-layout.layout>

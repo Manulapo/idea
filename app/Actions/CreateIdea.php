@@ -23,7 +23,7 @@ class CreateIdea
         }
 
         // create many steps the steps for the idea (steps have their own table and relationship with the idea)
-        $steps = collect($attributes['steps'] ?? [])->map(fn ($step) => ['description' => $step]);
+        $steps = collect($attributes['steps'] ?? [])->map(fn ($step) => ['description' => $step['description'] ?? $step, 'completed' => $step['completed'] ?? false]);
 
         // ? i create a transaction to make sure that if any of the steps fail, the idea creation will be rolled back and not saved in the database. this is important because if the idea is created but the steps fail, we will have an incomplete idea in the database.
 

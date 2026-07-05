@@ -53,6 +53,6 @@
         </div>
     </section>
 
-    <x-idea-modal />
+    <x-idea-modal name="create-idea" title="Create Idea" />
 
 </x-layout.layout>
