@@ -23,7 +23,14 @@
 
                     <x-card
                         is="ul"
+                        x-cloak
                         x-show="showProfileMenu"
+                        x-transition:enter="ease-out duration-150"
+                        x-transition:enter-start="opacity-0 -translate-y-2 scale-95"
+                        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                        x-transition:leave="ease-in duration-100"
+                        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                        x-transition:leave-end="opacity-0 -translate-y-2 scale-95"
                         class="menu bg-base-200 rounded-box absolute right-0 top-12 w-52 p-1 shadow-lg z-50 space-y-1"
                     >
                         <li class="hover:bg-black/20 p-2 rounded-lg"><a
@@ -37,7 +44,7 @@
                             <x-form.form
                                 action="/logout"
                                 method="DELETE"
-                                class="!m-0 !space-y-0"
+                                class="m-0! space-y-0!"
                             >
                                 <button
                                     type="submit"

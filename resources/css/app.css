@@ -8,6 +8,15 @@
 
 /* Accessibility: Screen reader only class */
 @layer utilities {
+    [x-cloak] {
+        display: none !important;
+    }
+
+    .disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+
     .sr-only {
         position: absolute;
         width: 1px;
