@@ -62,6 +62,7 @@ class IdeaController extends Controller
     {
         Gate::authorize('workWith', $idea);
 
+        // we use load to eager load the steps relationship to avoid the N+1 problem. This means that when we access the steps of the idea, it will not make a separate query for each step, but instead will load all the steps in one query.
         $idea->load('steps');
 
         return view('ideas.show', [

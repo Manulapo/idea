@@ -5,7 +5,6 @@
             description="All the ideas for this project"
         />
         <x-card
-            href="{{ route('ideas.create') }}"
             class="pointer my-10 text-left bg-primary btn flex items-center gap-2"
             is="button"
             type="button"

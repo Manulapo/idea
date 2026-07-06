@@ -18,7 +18,7 @@
         >{{ old($name, $value) }}</textarea>
     @elseif ($type === 'file')
         <input
-            {{ $attributes->merge(['class' => '']) }}
+            {{ $attributes->merge(['class' => 'text-foreground']) }}
             type="{{ $type }}"
             name="{{ $name }}"
             id="{{ $name }}"

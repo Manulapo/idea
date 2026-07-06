@@ -40,6 +40,11 @@ class Idea extends Model
         return $this->hasMany(Step::class);
     }
 
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public static function statusCounts()
     {
         /** @var User $user */
