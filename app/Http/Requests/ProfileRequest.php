@@ -31,6 +31,7 @@ class ProfileRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['string', 'email', 'max:255', Rule::unique('users', 'email')->ignore(Auth::user()->id)],
             'password' => ['nullable', Password::defaults()],
+            'image_path' => ['nullable', 'image', 'max:2048'], // max 2MB
         ];
 
     }

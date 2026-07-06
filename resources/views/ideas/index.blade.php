@@ -98,7 +98,7 @@
         </div>
     </section>
 
-    <x-idea-modal
+    <x-modals.idea-modal
         name="create-idea"
         title="Create Idea"
     />

@@ -15,16 +15,13 @@
             {{ $attributes->merge(['class' => 'textarea']) }}
             name="{{ $name }}"
             id="{{ $name }}"
-            {{ $attributes }}
         >{{ old($name, $value) }}</textarea>
     @elseif ($type === 'file')
         <input
-            {{ $attributes->merge(['class' => 'input']) }}
+            {{ $attributes->merge(['class' => '']) }}
             type="{{ $type }}"
             name="{{ $name }}"
             id="{{ $name }}"
-            multiple
-            {{ $attributes }}
         />
     @else
         <input
@@ -33,7 +30,6 @@
             name="{{ $name }}"
             id="{{ $name }}"
             value="{{ old($name, $value) }}"
-            {{ $attributes }}
         />
     @endif
 </div>

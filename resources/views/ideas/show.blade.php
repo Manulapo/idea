@@ -139,7 +139,7 @@
         </div>
     </div>
 
-    <x-idea-modal
+    <x-modals.idea-modal
         name="edit-idea"
         title="Edit Idea"
         type="edit"
