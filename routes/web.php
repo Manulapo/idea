@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     // comments
     Route::post('/ideas/{idea}/comments', [CommentController::class, 'store'])->name('ideas.add-comment');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::patch('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
 });
 
 Route::middleware('guest')->group(function () {

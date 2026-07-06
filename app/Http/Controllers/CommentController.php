@@ -75,6 +75,8 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
+        // add validation to check if the user is the owner of the comment
+
         $comment->delete();
 
         return redirect()->back()->with('success', 'Comment deleted successfully.');

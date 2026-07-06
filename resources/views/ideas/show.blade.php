@@ -140,58 +140,9 @@
             <div>
                 <h3 class="text-foreground text-xl font-bold my-4">Comments</h3>
 
-                {{-- display comments --}}
+                <x-comments.index :comments="$idea->comments" />
 
-                <div>
-                    @foreach ($idea->comments as $comment)
-                        <x-card class=" gap-4 space-y-2 mb-2">
-                            <div class="flex items-center gap-4 mb-4">
-                                <x-user-avatar
-                                    :user="$comment->user"
-                                    size="6"
-                                />
-                                <span class="text-sm text-muted-foreground">{{ $comment->user->name }}</span>
-                            </div>
-                            <div class="flex flex-col">
-                                <p class="text-foreground max-w-none">{{ $comment->content }}</p>
-                            </div>
-
-                            <p class="text-xs text-muted-foreground text-end">
-                                {{ $comment->created_at->diffForHumans() }}
-                            </p>
-
-                        </x-card>
-                    @endforeach
-                </div>
-
-                {{-- add a comment --}}
-                <x-card
-                    is="div"
-                    class="flex flex-col gap-2 mt-10"
-                >
-                    <x-form.form
-                        action="{{ route('ideas.add-comment', $idea->id) }}"
-                        method="POST"
-                        class="flex flex-col gap-2 w-full max-w-full"
-                    >
-                        <x-form.form-field
-                            name="content"
-                            type="textarea"
-                            class="w-full max-w-full border-none h-10"
-                            placeholder="Write your comment here..."
-                            required
-                        />
-                        <button
-                            type="submit"
-                            class="btn btn-primary self-end flex items-center"
-                        >Add Comment
-                            <iconify-icon
-                                icon="mdi:send"
-                                class="ml-2"
-                            ></iconify-icon>
-                        </button>
-                    </x-form.form>
-                </x-card>
+                <x-comments.add :idea-id="$idea->id" />
 
             </div>
         </div>
