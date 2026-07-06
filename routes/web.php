@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\StepController;
+use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/ideas');
@@ -24,6 +25,11 @@ Route::middleware('auth')->group(function () {
     // misc
     Route::patch('/steps/{step}', [StepController::class, 'update'])->name('steps.update');
     Route::delete('/ideas/{idea}/image', [IdeaImageController::class, 'destroy'])->name('ideas.delete-image');
+
+    // Teams
+    Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
+    Route::get('/teams/{team}', [TeamController::class, 'show'])->name('teams.show');
+    Route::post('/teams', [TeamController::class, 'store'])->name('teams.store');
 
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

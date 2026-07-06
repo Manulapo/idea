@@ -32,6 +32,13 @@
                                     icon="mdi:account"
                                     class="inline-block mr-2"
                                 ></iconify-icon>Profile</a></li>
+                        <li class="hover:bg-black/20 p-2 rounded-lg"><a
+                                href="/teams"
+                                class="flex items-center"
+                            > <iconify-icon
+                                    icon="mdi:people"
+                                    class="inline-block mr-2"
+                                ></iconify-icon>Teams</a></li>
                         <li class="hover:bg-red-500/20 p-2 rounded-lg">
                             <x-form.form
                                 action="/logout"

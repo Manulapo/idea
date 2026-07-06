@@ -4,7 +4,6 @@
         description="Update your account information."
     >
 
-        {{-- image --}}
         {{-- form --}}
         <x-form.form
             action="/profile"

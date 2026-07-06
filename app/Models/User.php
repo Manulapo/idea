@@ -44,4 +44,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class)
+            ->withPivot('role') // that makes the role column to be returned alogside the team and user data when we access the relationship
+            ->withTimestamps();
+    }
 }

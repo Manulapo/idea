@@ -23,6 +23,14 @@
             name="{{ $name }}"
             id="{{ $name }}"
         />
+    @elseif ($type === 'select')
+        <select
+            {{ $attributes->merge(['class' => 'select']) }}
+            name="{{ $name }}"
+            id="{{ $name }}"
+        >
+            {{ $slot }}
+        </select>
     @else
         <input
             {{ $attributes->merge(['class' => 'input']) }}
