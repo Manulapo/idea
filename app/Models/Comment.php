@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Database\Factories\CommentFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[Fillable([
+    'content',
+    'user_id',
+    'idea_id',
+])]
 class Comment extends Model
 {
     /** @use HasFactory<CommentFactory> */
     use HasFactory;
-
-    protected $fillable = [
-        'content',
-        'user_id',
-        'idea_id',
-    ];
 
     public function user()
     {
