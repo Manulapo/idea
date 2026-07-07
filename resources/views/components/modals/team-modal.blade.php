@@ -24,6 +24,14 @@
             :value="$team->name"
             required
         />
+        <x-form.form-field
+            name="description"
+            label="Team Description"
+            type="textarea"
+            placeholder="Enter a description for your team"
+            :value="$team->description"
+            required
+        />
 
         <x-modals.team-modal-participants
             :team="$team"

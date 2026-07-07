@@ -19,6 +19,7 @@ class TeamFactory extends Factory
     {
         return [
             'name' => fake()->company(),
+            'description' => fake()->paragraph(),
             'private' => fake()->boolean(),
         ];
     }

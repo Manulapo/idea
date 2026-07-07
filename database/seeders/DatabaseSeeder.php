@@ -27,7 +27,10 @@ class DatabaseSeeder extends Seeder
         $secondUser = User::factory()->create([
             'name' => 'User 2',
             'email' => 'test2@example.com',
+            'password' => '12345678', // password
         ]);
+
+        User::factory(3)->create(); // create 3 more users
 
         // create 5 ideas for the test user
         Idea::factory(5)->create(['user_id' => $firstUser->id]);

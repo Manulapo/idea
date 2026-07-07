@@ -30,6 +30,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
     Route::get('/teams/{team}', [TeamController::class, 'show'])->name('teams.show');
     Route::post('/teams', [TeamController::class, 'store'])->name('teams.store');
+    Route::patch('/teams/{team}', [TeamController::class, 'update'])->name('teams.update');
+    Route::delete('/teams/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
+    Route::patch('/teams/{team}/users/{user}', [TeamController::class, 'changeRole'])->name('teams.change-role');
+    Route::delete('/teams/{team}/users/{user}', [TeamController::class, 'removeUserFromTeam'])->name('teams.remove-user');
 
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
