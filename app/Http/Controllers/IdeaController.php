@@ -52,6 +52,7 @@ class IdeaController extends Controller
             'ideas' => $ideas,
             'statusCounts' => Idea::statusCounts(),
             'teams' => $user->teams,
+            'user' => $user,
         ]);
     }
 

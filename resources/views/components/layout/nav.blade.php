@@ -9,11 +9,22 @@
                     x-data="{ showProfileMenu: false }"
                     class="relative flex gap-x-5 items-center"
                 >
+                    <div class="hover:bg-black/20 p-2 rounded-lg"><a
+                            href="/teams"
+                            class="flex items-center"
+                        > <iconify-icon
+                                icon="mdi:people"
+                                class="inline-block mr-2"
+                            ></iconify-icon>Teams</a></div>
                     <div
                         class="cursor-pointer flex items-center"
                         @click="showProfileMenu = !showProfileMenu"
                         @click.outside="showProfileMenu = false"
                     >
+                        <iconify-icon
+                            icon="mdi:account"
+                            class="inline-block mr-2"
+                        ></iconify-icon>
                         <x-user-avatar
                             :user="Auth::user()"
                             size="10"
@@ -32,13 +43,7 @@
                                     icon="mdi:account"
                                     class="inline-block mr-2"
                                 ></iconify-icon>Profile</a></li>
-                        <li class="hover:bg-black/20 p-2 rounded-lg"><a
-                                href="/teams"
-                                class="flex items-center"
-                            > <iconify-icon
-                                    icon="mdi:people"
-                                    class="inline-block mr-2"
-                                ></iconify-icon>Teams</a></li>
+
                         <li class="hover:bg-red-500/20 p-2 rounded-lg">
                             <x-form.form
                                 action="/logout"

@@ -120,7 +120,10 @@
             role="list"
         >
             @forelse ($ideas as $idea)
-                <x-idea-card :idea="$idea" />
+                <x-idea-card
+                    :idea="$idea"
+                    :showTeam="false"
+                />
             @empty
                 <x-card
                     role="status"

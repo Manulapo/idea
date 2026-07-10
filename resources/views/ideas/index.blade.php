@@ -44,7 +44,10 @@
             role="list"
         >
             @forelse ($ideas as $idea)
-                <x-idea-card :idea="$idea" />
+                <x-idea-card
+                    :idea="$idea"
+                    :user="$user"
+                />
             @empty
                 <x-card
                     role="status"

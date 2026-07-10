@@ -65,13 +65,35 @@
                 </div>
             @endif
             <h1 class="text-foreground text-3xl font-bold mb-6">{{ $idea->title }}</h1>
-            <div class="mt-2 flex gap-x-3 items-center">
-                <x-status-label :status="$idea->status">
-                    {{ $idea->status->label() }}
-                </x-status-label>
+            <div class="flex items-center justify-between">
 
-                <div class="flex items-center gap-x-2 text-sm text-muted-foreground">
-                    <span>{{ $idea->created_at->diffForHumans() }}</span>
+                <div class="mt-2 flex gap-x-3 items-center">
+                    <x-status-label :status="$idea->status">
+                        {{ $idea->status->label() }}
+                    </x-status-label>
+
+                    <div class="flex items-center gap-x-2 text-sm text-muted-foreground">
+                        <span>{{ $idea->created_at->diffForHumans() }}</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1">
+                    <x-user-avatar
+                        :user="$idea->user"
+                        size="6"
+                    />
+                    <span class="ml-2 text-sm text-muted-foreground">{{ $idea->user->name }}</span>
+                    <span class="text-muted-foreground text-sm">in</span>
+                    <span class="text-sm text-muted-foreground">
+                        @if ($idea->team)
+                            <a
+                                href="{{ route('teams.show', $idea->team->id) }}"
+                                class="text-sm text-primary/70 hover:underline"
+                                onclick="event.stopPropagation()"
+                            >
+                                {{ $idea->team->name }}
+                            </a>
+                        @endif
+                    </span>
                 </div>
             </div>
             @if ($idea->description)
