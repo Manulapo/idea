@@ -44,19 +44,29 @@ class TeamController extends Controller
         $data = $request->validated();
         $team = Team::create([
             'name' => $data['name'],
+            'description' => $data['description'] ?? null,
         ]);
 
         // attach the participants to the team
-        $participants = $data['participants'] ?? [];
         $user = Auth::user();
 
-        // we put the creator as the creator of the team and the rest as members
-        foreach ($participants as $participantId) {
-            $isAdmin = ((int) $user->id === (int) $participantId);
-            $role = $isAdmin ? 'owner' : 'member';
+        $participantIds = collect($data['participants'] ?? [])
+            ->map(fn ($id) => (int) $id) // convert to int to avoid any issues with string ids
+            ->push((int) $user->id) // ensure the creator is always a participant
+            ->unique() // remove duplicates
+            ->values(); // reindex the collection
 
-            $team->users()->syncWithPivotValues($participantId, ['role' => $role], false);
-        }
+        $syncData = $participantIds
+            ->mapWithKeys(fn (int $participantId) => [
+                $participantId => [
+                    'role' => $participantId === (int) $user->id
+                        ? TeamRole::OWNER->value
+                        : TeamRole::MEMBER->value,
+                ],
+            ])
+            ->all();
+
+        $team->users()->sync($syncData); // sync is a method that will add new participants and remove those not in the list, but will not remove owners
 
         return redirect()->route('teams.index')->with('success', 'Team created successfully.');
     }
@@ -77,8 +87,9 @@ class TeamController extends Controller
             'team' => $team,
             'users' => User::all(),
             'currentUserRole' => $currentRoleValue ? TeamRole::from($currentRoleValue) : TeamRole::MEMBER,
-            'admins' => $team->users()->wherePivotIn('role', ['admin', 'owner'])->get(),
-            'members' => $team->users()->wherePivot('role', 'member')->get(),
+            'admins' => $team->users()->wherePivotIn('role', [TeamRole::ADMIN->value, TeamRole::OWNER->value])->get(),
+            'members' => $team->users()->wherePivot('role', TeamRole::MEMBER->value)->get(),
+            'ideas' => $team->ideas()->latest()->get(),
         ]);
     }
 
@@ -102,22 +113,33 @@ class TeamController extends Controller
         ]);
 
         // handle participants update
-        $participants = $data['participants'] ?? [];
-        $previousParticipants = $team->users()->pluck('user_id')->toArray();
+        $participantIds = collect($data['participants'] ?? [])
+            ->map(fn ($id) => (int) $id);
 
-        foreach ($previousParticipants as $previousParticipantId) {
-            if (! in_array($previousParticipantId, $participants)) {
-                $team->users()->detach($previousParticipantId);
-            }
-        }
+        // get the owner ids to ensure they are not removed from the team
+        $ownerIds = $team->users()
+            ->wherePivot('role', TeamRole::OWNER->value)
+            ->pluck('users.id');
 
-        // in here we update based on the previous role of the user, if the user was an admin before, we keep them as an admin, otherwise we make them a member
-        foreach ($participants as $participantId) {
-            $previousRole = $team->users()->where('user_id', $participantId)->first()?->pivot->role;
-            $role = $previousRole === 'admin' ? 'admin' : 'member';
+        // merge the owner ids with the participant ids to ensure they are not removed from the team
+        $participantIds = $participantIds
+            ->merge($ownerIds)
+            ->unique()
+            ->values();
 
-            $team->users()->syncWithPivotValues($participantId, ['role' => $role], false);
-        }
+        $existingRoles = $team->users()
+            ->pluck('team_user.role', 'users.id');
+
+        $syncData = $participantIds
+            ->mapWithKeys(fn (int $participantId) => [
+                $participantId => [
+                    'role' => $existingRoles[$participantId] ?? TeamRole::MEMBER->value,
+                ],
+            ])
+            ->all();
+
+        // sync the participants with the team, this will add new participants and remove those not in the list, but will not remove owners
+        $team->users()->sync($syncData);
 
         return redirect()->route('teams.show', $team)->with('success', 'Team updated successfully.');
     }
@@ -131,7 +153,7 @@ class TeamController extends Controller
         // check for team existence and if the role of the user is admin
         if ($team->users()
             ->where('user_id', $user->id)
-            ->wherePivot('role', 'admin')
+            ->wherePivotIn('role', [TeamRole::ADMIN->value, TeamRole::OWNER->value])
             ->exists()) {
             $team->users()->detach(); // Detach all users from the team
             $team->delete(); // Delete the team

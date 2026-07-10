@@ -13,31 +13,32 @@
                     height="24"
                 ></iconify-icon>
                 Back to Ideas</a>
-
-            <div class="gap-x-3 flex items-center">
-                <button
-                    x-data
-                    class="btn btn-outlined flex items-center"
-                    @click="$dispatch('open-modal', 'edit-idea')"
-                >
-                    <iconify-icon
-                        icon="lucide:external-link"
-                        class="text-foreground mr-2"
-                        width="16"
-                        height="16"
-                    ></iconify-icon>
-                    Edit Idea</button>
-                <x-form.form
-                    action="{{ route('ideas.destroy', $idea->id) }}"
-                    method="DELETE"
-                    class="inline"
-                >
+            @if ($isOwner)
+                <div class="gap-x-3 flex items-center">
                     <button
-                        type="submit"
-                        class="btn btn-outlined text-red-400"
-                    >Delete</button>
-                </x-form.form>
-            </div>
+                        x-data
+                        class="btn btn-outlined flex items-center"
+                        @click="$dispatch('open-modal', 'edit-idea')"
+                    >
+                        <iconify-icon
+                            icon="lucide:external-link"
+                            class="text-foreground mr-2"
+                            width="16"
+                            height="16"
+                        ></iconify-icon>
+                        Edit Idea</button>
+                    <x-form.form
+                        action="{{ route('ideas.destroy', $idea->id) }}"
+                        method="DELETE"
+                        class="inline"
+                    >
+                        <button
+                            type="submit"
+                            class="btn btn-outlined text-red-400"
+                        >Delete</button>
+                    </x-form.form>
+                </div>
+            @endif
         </div>
 
         <div class="py-8 space-y-6">
@@ -153,6 +154,7 @@
         title="Edit Idea"
         type="edit"
         :idea="$idea"
+        :teams="$teams"
     />
 
     @if ($idea->exists)

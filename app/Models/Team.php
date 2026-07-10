@@ -17,4 +17,9 @@ class Team extends Model
             ->withPivot('role') // that makes the role column to be returned alogside the team and user data when we access the relationship
             ->withTimestamps();
     }
+
+    public function ideas()
+    {
+        return $this->hasMany(Idea::class);
+    }
 }

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class Idea extends Model
@@ -45,20 +46,37 @@ class Idea extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public static function statusCounts()
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
+
+    public static function statusCounts(): Collection
     {
         /** @var User $user */
         $user = Auth::user();
-        // select the count of each statuses
-        $count = $user->ideas()
-            ->selectRaw('status,count(*) as count') // select status and their count from DB
-            ->groupBy('status') // group all the results by statuses
-            ->pluck('count', 'status'); // take the count value and assign the "status" key
 
-        // return a collection
-        return collect(IdeaStatus::cases())->mapWithKeys(fn ($status) => [
-            $status->value => $count->get($status->value, 0),
-        ])->put('all', $user->ideas()->count());
+        $teamIds = $user->teams()->pluck('teams.id');
+
+        $visibleIdeas = Idea::where(function ($query) use ($user, $teamIds) {
+            $query->where('user_id', $user->id); // only include ideas created by the user
+
+            if ($teamIds->isNotEmpty()) {
+                $query->orWhereIn('team_id', $teamIds); // only include ideas from teams the user is a member of
+            }
+        });
+
+        $countsByStatus = (clone $visibleIdeas)
+            ->selectRaw('status, count(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status'); // this is where actually we run the query and get the counts by status as a collection where the keys are the status values and the values are the counts.
+
+        return collect(IdeaStatus::cases())
+            ->mapWithKeys(fn ($status) => [
+                $status->value => (int) $countsByStatus->get($status->value, 0),
+            ])
+            ->put('all', (clone $visibleIdeas)->count()) // this is where we run the query again to get the total count of visible ideas and add it to the collection with the key 'all'.
+            ->put('my-ideas', $user->ideas()->count());
     }
 
     public function formattedDescription(): Attribute

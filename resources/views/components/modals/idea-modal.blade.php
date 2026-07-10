@@ -1,8 +1,17 @@
-@props(['name' => 'create-idea', 'title' => 'Create an idea', 'type' => 'create', 'idea' => new App\Models\Idea()])
+@props([
+    'name' => 'create-idea',
+    'title' => 'Create an idea',
+    'type' => 'create',
+    'idea' => new App\Models\Idea(),
+    'teams' => [],
+    'fixedTeamId' => null,
+])
 
 @php
     $formAction = $type === 'create' ? route('ideas.store') : route('ideas.update', $idea->id);
     $formMethod = $type === 'create' ? 'POST' : 'PATCH';
+    $resolvedTeamId = $fixedTeamId ? (string) $fixedTeamId : (string) old('team_id', $idea->team_id);
+    $shouldHideTeamField = filled($fixedTeamId);
 @endphp
 
 <x-modals.modal
@@ -24,9 +33,29 @@
                 links: @js(old('links', $idea->exists ? $idea->links : [])),
                 newStep: '',
                 steps: @js(old('steps', $idea->exists ? $idea->steps->map->only('id', 'description', 'completed') : [])),
-                removeImage: false
+                removeImage: false,
+                teamId: '{{ old('team_id', $idea->team_id) }}',
             }"
         >
+
+            @if ($shouldHideTeamField)
+                <input
+                    type="hidden"
+                    name="team_id"
+                    value="{{ $resolvedTeamId }}"
+                >
+            @else
+                <x-form.select-picker
+                    name="team_id"
+                    label="Team"
+                    :options="$teams"
+                    :value="$resolvedTeamId"
+                    placeholder="Assign to a team"
+                    search-placeholder="Search teams"
+                    empty-message="No teams found."
+                    :multiple="false"
+                />
+            @endif
 
             <x-form.form-field
                 name="title"

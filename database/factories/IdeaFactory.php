@@ -20,6 +20,7 @@ class IdeaFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
+            'team_id' => fake()->optional()->numberBetween(1, 5), // optional team_id between 1 and 5
             'title' => fake()->sentence(),
             'description' => fake()->paragraph(),
             'links' => [fake()->url()],

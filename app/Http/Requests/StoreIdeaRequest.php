@@ -27,8 +27,8 @@ class StoreIdeaRequest extends FormRequest
      */
     public function rules(): array
     {
-
         return [
+            'team_id' => ['nullable', 'integer'],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'status' => ['required', Rule::enum(IdeaStatus::class)],
@@ -53,6 +53,7 @@ class StoreIdeaRequest extends FormRequest
             'links' => $this->input('links', []),
             'steps' => $this->input('steps', []),
             'remove_image' => filter_var($this->input('remove_image', false), FILTER_VALIDATE_BOOLEAN),
+            'team_id' => $this->input('team_id') ? (int) $this->input('team_id') : null,
         ]);
     }
 }

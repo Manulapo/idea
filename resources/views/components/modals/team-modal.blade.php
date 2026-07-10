@@ -33,9 +33,15 @@
             required
         />
 
-        <x-modals.team-modal-participants
-            :team="$team"
-            :users="$users"
+        <x-form.select-picker
+            name="participants"
+            label="Team Participants"
+            :options="$users"
+            :value="$team->exists ? $team->users->pluck('id')->all() : []"
+            placeholder="Select participants for your team"
+            search-placeholder="Search participants"
+            empty-message="No participants found."
+            multiple
         />
 
         <div class="w-full flex justify-end">

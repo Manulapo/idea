@@ -33,10 +33,10 @@ class DatabaseSeeder extends Seeder
         User::factory(3)->create(); // create 3 more users
 
         // create 5 ideas for the test user
-        Idea::factory(5)->create(['user_id' => $firstUser->id]);
+        Idea::factory(5)->create(['user_id' => $firstUser->id, 'team_id' => 1]);
 
         // create 5 ideas for the second user
-        Idea::factory(5)->create(['user_id' => $secondUser->id]);
+        Idea::factory(5)->create(['user_id' => $secondUser->id, 'team_id' => 2]);
 
         // create 5 comments for the first idea
         Idea::find(1)->comments()->createMany([

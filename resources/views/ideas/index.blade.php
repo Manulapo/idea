@@ -23,27 +23,7 @@
         </x-card>
     </div>
 
-    <div
-        class="mt-6"
-        aria-label="Filter ideas by status"
-    >
-        <a
-            href="/ideas"
-            class="btn {{ request('status') === null ? 'btn-primary' : 'btn-outlined' }}"
-            aria-current="{{ request('status') === null ? 'page' : 'false' }}"
-        >All</a>
-        @foreach (App\IdeaStatus::cases() as $status)
-            <a
-                href="/ideas?status={{ $status->value }}"
-                class="btn {{ request('status') === $status->value ? 'btn-primary' : 'btn-outlined' }}"
-                aria-current="{{ request('status') === $status->value ? 'page' : 'false' }}"
-            >{{ $status->label() }}
-                <span
-                    class="text-xs pl-3"
-                    aria-label="{{ $statusCounts->get($status->value) }} ideas"
-                >{{ $statusCounts->get($status->value) }}</span></a>
-        @endforeach
-    </div>
+    <x-status-filter :statusCounts="$statusCounts" />
 
     <section
         class="mt-10"
@@ -64,28 +44,7 @@
             role="list"
         >
             @forelse ($ideas as $idea)
-                <x-card
-                    href="{{ '/ideas/' . $idea->id }}"
-                    role="listitem"
-                    aria-label="View idea: {{ $idea->title }}"
-                >
-                    @if ($idea->image_path)
-                        <div class="rounded-lg overflow-hidden -mx-4 -mt-4">
-                            <img
-                                src="{{ asset('storage/' . $idea->image_path) }}"
-                                alt="{{ $idea->title }}"
-                                class="w-full h-48 object-cover mb-4"
-                            >
-                        </div>
-                    @endif
-                    <h3 class="text-foreground text-lg mb-2">{{ $idea->title }}</h3>
-                    <x-status-label :status="$idea->status" />
-                    <p class="text-muted-foreground line-clamp-3 mt-5">{{ $idea->description }}</p>
-                    <div class="mt-4 text-sm text-muted-foreground/50">
-                        <time
-                            datetime="{{ $idea->created_at->toIso8601String() }}">{{ $idea->created_at->diffForHumans() }}</time>
-                    </div>
-                </x-card>
+                <x-idea-card :idea="$idea" />
             @empty
                 <x-card
                     role="status"
@@ -100,6 +59,7 @@
     <x-modals.idea-modal
         name="create-idea"
         title="Create Idea"
+        :teams="$teams"
     />
 
 </x-layout.layout>

@@ -14,6 +14,16 @@ class IdeaPolicy
      */
     public function workWith(User $user, Idea $idea): bool
     {
-        return $idea->user->is($user);
+        $isUserOwner = $idea->user->is($user);
+        $isUserInIdeaTeam = $user->teams()->whereKey($idea->team_id)->exists();
+
+        return $isUserOwner || $isUserInIdeaTeam;
+    }
+
+    public function editIdea(User $user, Idea $idea): bool
+    {
+        $isUserOwner = $idea->user->is($user);
+
+        return $isUserOwner;
     }
 }

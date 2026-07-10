@@ -1,13 +1,38 @@
-@props(['team' => new App\Models\Team(), 'users' => []])
+@props([
+    'name',
+    'label' => '',
+    'options' => [],
+    'value' => null,
+    'multiple' => true,
+    'placeholder' => 'Select an option',
+    'searchPlaceholder' => 'Search options',
+    'emptyMessage' => 'No options found.',
+    'optionValueKey' => 'id',
+    'optionLabelKey' => 'name',
+])
 
 @php
-    $selectedParticipants = collect(old('participants', $team->exists ? $team->users->pluck('id')->all() : []))
-        ->map(fn($id) => (string) $id)
+    $selectedValues = collect(old($name, $value ?? ($multiple ? [] : null)));
+
+    if (!$multiple) {
+        $selectedValues = $selectedValues->filter(fn($selectedValue) => filled($selectedValue))->take(1);
+    }
+
+    $selectedValues = $selectedValues->map(fn($selectedValue) => (string) $selectedValue)->values()->all();
+
+    $normalizedOptions = collect($options)
+        ->map(function ($option) use ($optionValueKey, $optionLabelKey) {
+            return [
+                'id' => (string) data_get($option, $optionValueKey),
+                'name' => (string) data_get($option, $optionLabelKey),
+            ];
+        })
+        ->filter(fn(array $option) => filled($option['id']) && filled($option['name']))
+        ->values()
         ->all();
 
-    $participantOptions = collect($users)
-        ->map(fn($user) => ['id' => (string) $user->id, 'name' => $user->name])
-        ->values();
+    $inputId = (string) \Illuminate\Support\Str::slug($name, '-');
+    $menuId = $inputId . '-menu';
 @endphp
 
 <div
@@ -16,9 +41,10 @@
         open: false,
         query: '',
         dropdownStyles: '',
-        menuId: 'participants-menu',
-        options: @js($participantOptions),
-        selected: @js($selectedParticipants),
+        menuId: @js($menuId),
+        options: @js($normalizedOptions),
+        selected: @js($selectedValues),
+        multiple: @js($multiple),
         toggleOpen() {
             this.open = !this.open;
     
@@ -33,8 +59,14 @@
         },
         close() {
             this.open = false;
+            this.query = '';
+            this.dropdownStyles = '';
         },
         updateDropdownPosition() {
+            if (!this.open) {
+                return;
+            }
+    
             const trigger = this.$refs.trigger;
     
             if (!trigger) {
@@ -65,12 +97,18 @@
         toggle(id) {
             const normalizedId = String(id);
     
-            if (this.isSelected(normalizedId)) {
-                this.selected = this.selected.filter((value) => value !== normalizedId);
+            if (this.multiple) {
+                if (this.isSelected(normalizedId)) {
+                    this.selected = this.selected.filter((value) => value !== normalizedId);
+                    return;
+                }
+    
+                this.selected.push(normalizedId);
                 return;
             }
     
-            this.selected.push(normalizedId);
+            this.selected = this.isSelected(normalizedId) ? [] : [normalizedId];
+            this.close();
         },
         remove(id) {
             const normalizedId = String(id);
@@ -94,14 +132,15 @@
         }
     }"
     @keydown.escape.window="close()"
+    @close-modal.window="close()"
     @click.window="handleWindowClick($event)"
     @resize.window="updateDropdownPosition()"
     @scroll.window="updateDropdownPosition()"
 >
     <label
-        for="participants-search"
+        for="{{ $inputId }}-search"
         class="label text-start"
-    >Team Participants</label>
+    >{{ $label }}</label>
 
     <div class="relative">
         <div
@@ -116,27 +155,31 @@
             :aria-controls="menuId"
         >
             <template x-if="selected.length === 0">
-                <span class="text-muted-foreground">Select participants for your team</span>
+                <span class="text-muted-foreground">{{ $placeholder }}</span>
+            </template>
+
+            <template x-if="!multiple && selected.length > 0">
+                <span x-text="selectedLabel(selected[0])"></span>
             </template>
 
             <div
-                x-show="selected.length > 0"
+                x-show="multiple && selected.length > 0"
                 class="flex flex-wrap gap-2"
                 x-cloak
             >
                 <template
-                    x-for="participantId in selected"
-                    :key="participantId"
+                    x-for="selectedId in selected"
+                    :key="selectedId"
                 >
                     <span
                         class="inline-flex items-center gap-1 rounded-full border border-border bg-background px-3 py-1 text-sm"
                     >
-                        <span x-text="selectedLabel(participantId)"></span>
+                        <span x-text="selectedLabel(selectedId)"></span>
                         <button
                             type="button"
                             class="form-muted-icon"
-                            @click.stop="remove(participantId)"
-                            aria-label="Remove participant"
+                            @click.stop="remove(selectedId)"
+                            :aria-label="`Remove ${selectedLabel(selectedId)}`"
                         >x</button>
                     </span>
                 </template>
@@ -154,17 +197,17 @@
                 class="z-70 space-y-3 rounded-xl border border-border bg-card p-3 shadow-2xl"
             >
                 <input
-                    id="participants-search"
+                    id="{{ $inputId }}-search"
                     type="text"
                     class="input h-9"
                     x-model="query"
                     x-ref="searchInput"
-                    placeholder="Search participants"
+                    placeholder="{{ $searchPlaceholder }}"
                 >
 
                 <div class="max-h-56 space-y-1 overflow-y-auto pr-1">
                     <template x-if="filteredOptions.length === 0">
-                        <p class="px-3 py-2 text-sm text-muted-foreground">No participants found.</p>
+                        <p class="px-3 py-2 text-sm text-muted-foreground">{{ $emptyMessage }}</p>
                     </template>
 
                     <template
@@ -209,23 +252,34 @@
         </template>
     </div>
 
-    <div>
-        <template
-            x-for="participantId in selected"
-            :key="`selected-${participantId}`"
-        >
-            <input
-                type="hidden"
-                name="participants[]"
-                :value="participantId"
+    @if ($multiple)
+        <div>
+            <template
+                x-for="selectedId in selected"
+                :key="`selected-${selectedId}`"
             >
-        </template>
-    </div>
+                <input
+                    type="hidden"
+                    name="{{ $name }}[]"
+                    :value="selectedId"
+                >
+            </template>
+        </div>
+    @else
+        <input
+            type="hidden"
+            name="{{ $name }}"
+            :value="selected[0] ?? ''"
+        >
+    @endif
 
-    @error('participants')
+    @error($name)
         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
     @enderror
-    @error('participants.*')
-        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-    @enderror
+
+    @if ($multiple)
+        @error($name . '.*')
+            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        @enderror
+    @endif
 </div>
