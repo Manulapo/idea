@@ -51,6 +51,7 @@ class CreateIdea
             if (! $personalTeam) {
                 $personalTeam = $user->teams()->create([
                     'name' => 'My Ideas',
+                    'description' => 'Personal team for managing ideas',
                     'private' => true,
                 ], [
                     'role' => 'owner',
