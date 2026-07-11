@@ -85,18 +85,18 @@
             const shouldOpenUp = spaceBelow < 260 && spaceAbove > spaceBelow;
             const availableVerticalSpace = Math.max(180, shouldOpenUp ? spaceAbove : spaceBelow);
             const renderedMenuHeight = Math.min(menuHeight, availableVerticalSpace);
-
-            const unclampedTop = shouldOpenUp
-                ? triggerRect.top - dropdownOffset - renderedMenuHeight
-                : triggerRect.bottom + dropdownOffset;
-
+    
+            const unclampedTop = shouldOpenUp ?
+                triggerRect.top - dropdownOffset - renderedMenuHeight :
+                triggerRect.bottom + dropdownOffset;
+    
             const maxTop = window.innerHeight - viewportPadding - renderedMenuHeight;
             const top = Math.max(viewportPadding, Math.min(unclampedTop, maxTop));
             const left = Math.max(
                 viewportPadding,
                 Math.min(triggerRect.left, window.innerWidth - viewportPadding - menuWidth)
             );
-
+    
             this.optionsMaxHeight = Math.max(96, availableVerticalSpace - 120);
     
             this.dropdownStyles = `position: fixed; left: ${left}px; top: ${top}px; width: ${menuWidth}px; max-height: ${availableVerticalSpace}px;`;
