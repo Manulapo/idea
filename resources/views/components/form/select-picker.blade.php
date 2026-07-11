@@ -1,6 +1,7 @@
 @props([
     'name',
     'label' => '',
+    'displayLabel' => null,
     'options' => [],
     'value' => null,
     'multiple' => true,
@@ -39,7 +40,7 @@
 @endphp
 
 <div
-    class="space-y-3"
+    {{ $attributes->merge(['class' => 'space-y-3']) }}
     x-data="{
         open: false,
         query: '',
@@ -48,6 +49,7 @@
         menuId: @js($menuId),
         options: @js($normalizedOptions),
         selected: @js($selectedValues),
+        displayLabel: @js($displayLabel),
         multiple: @js($multiple),
         withAvatars: @js($withAvatars),
         toggleOpen() {
@@ -137,6 +139,7 @@
     
             this.selected = this.isSelected(normalizedId) ? [] : [normalizedId];
             this.close();
+            this.$nextTick(() => this.$dispatch('select-picker-change'));
         },
         remove(id) {
             const normalizedId = String(id);
@@ -156,7 +159,7 @@
         },
         selectedLabel(id) {
             const selectedOption = this.options.find((option) => option.id === String(id));
-            return selectedOption ? selectedOption.name : id;
+            return selectedOption ? selectedOption.name : (this.displayLabel ?? id);
         }
     }"
     @keydown.escape.window="close()"
@@ -174,7 +177,7 @@
 
     <div class="relative">
         <div
-            class="daisy-select daisy-select-bordered !bg-card !border-border !text-foreground h-auto min-h-10 py-2 cursor-pointer text-left flex items-center justify-between"
+            class="daisy-select daisy-select-bordered !bg-card !border-border !text-foreground !rounded-xl h-auto min-h-10 py-2 cursor-pointer text-left flex items-center justify-between"
             x-ref="trigger"
             role="button"
             tabindex="0"

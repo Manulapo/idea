@@ -11,6 +11,7 @@ use App\Http\Requests\StoreIdeaRequest;
 use App\IdeaStatus;
 use App\Models\Idea;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
@@ -114,6 +115,19 @@ class IdeaController extends Controller
         $updateIdea->handle($attributes, $idea);
 
         return redirect()->route('ideas.show', $idea)->with('success', 'Idea updated successfully.');
+    }
+
+    public function updateAssignee(Request $request, Idea $idea)
+    {
+        Gate::authorize('editIdea', $idea);
+
+        $validated = $request->validate([
+            'assignee_id' => ['nullable', 'exists:users,id'],
+        ]);
+
+        $idea->update($validated);
+
+        return back();
     }
 
     /**

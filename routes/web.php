@@ -18,6 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/ideas', [IdeaController::class, 'index'])->name('ideas.index');
     Route::post('/ideas', [IdeaController::class, 'store'])->name('ideas.store');
     Route::patch('/ideas/{idea}', [IdeaController::class, 'update'])->name('ideas.update');
+    Route::patch('/ideas/{idea}/assignee', [IdeaController::class, 'updateAssignee'])->name('ideas.update-assignee');
     Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy'])->name('ideas.destroy');
     Route::get('/ideas/{idea}', [IdeaController::class, 'show'])->name('ideas.show');
     Route::get('/ideas/{idea}/edit', [IdeaController::class, 'edit'])->name('ideas.edit');

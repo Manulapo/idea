@@ -51,7 +51,7 @@
             @endif
         </div>
 
-        <div class="py-8 space-y-12">
+        <div class="py-8 space-y-8">
             @if ($idea->image_path)
                 <div class="rounded-lg overflow-hidden relative group">
                     <img
@@ -109,18 +109,27 @@
 
             {{-- Assigned to --}}
             @if ($idea->team)
-                <div>
-                    <x-form.select-picker
-                        name="assignee_id"
-                        label="Assignee"
-                        :options="$assigneesOptions"
-                        :value="$idea->assignee ? $idea->assignee->name : null"
-                        placeholder="Assign to a member"
-                        search-placeholder="Search members"
-                        empty-message="No members found."
-                        :multiple="false"
-                        :with-avatars="true"
-                    />
+                <div class="w-full flex justify-end">
+                    <x-form.form
+                        action="{{ route('ideas.update-assignee', $idea->id) }}"
+                        method="PATCH"
+                        x-data
+                        @select-picker-change.window="$el.submit()"
+                        class="gap-2 max-w-0'"
+                    >
+                        <x-form.select-picker
+                            name="assignee_id"
+                            :options="$assigneesOptions"
+                            :value="$idea->assignee ? $idea->assignee->id : null"
+                            :display-label="$idea->assignee ? $idea->assignee->name : null"
+                            placeholder="Assign to"
+                            search-placeholder="Search members"
+                            empty-message="No members found."
+                            :multiple="false"
+                            :with-avatars="true"
+                            class="min-w-60"
+                        />
+                    </x-form.form>
                 </div>
             @endif
 
