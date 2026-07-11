@@ -18,12 +18,12 @@ Idea started as a project inspired by Laracasts learning material, then evolved 
 
 ## Product Snapshot
 
-| Area | Description |
-| --- | --- |
-| Ideas | Capture and manage ideas with clear statuses. |
-| Steps | Break ideas into actionable steps. |
-| Teamwork | Collaborate with participants and comments. |
-| UX | Keep interactions fast and focused for daily use. |
+| Area     | Description                                       |
+| -------- | ------------------------------------------------- |
+| Ideas    | Capture and manage ideas with clear statuses.     |
+| Steps    | Break ideas into actionable steps.                |
+| Teamwork | Collaborate with participants and comments.       |
+| UX       | Keep interactions fast and focused for daily use. |
 
 ## Workflow Overview
 
