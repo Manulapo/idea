@@ -23,7 +23,7 @@ it('creates a new idea', function () {
         ->assertPathIs('/ideas');
 
     // todo fix
-    expect(Idea::first())->toMatchArray([
+    expect(Idea::first()->toArray())->toMatchArray([
         'title' => 'My first idea',
         'description' => 'This is my first idea',
         'status' => 'completed',

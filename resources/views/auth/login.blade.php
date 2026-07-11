@@ -7,6 +7,7 @@
         <x-form.form
             action="/login"
             method="POST"
+            class="mt-8"
         >
             <x-form.form-field
                 name="email"

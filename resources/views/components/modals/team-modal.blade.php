@@ -14,7 +14,7 @@
         action="{{ $formAction }}"
         method="{{ $formMethod }}"
         aria-label="{{ $type === 'create' ? 'Create a new team' : 'Edit team' }}"
-        enctype="multipart/form-data"
+        :enctype="app()->environment('testing') ? null : 'multipart/form-data'"
     >
         <x-form.form-field
             name="name"

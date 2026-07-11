@@ -20,6 +20,7 @@
                         class="cursor-pointer flex items-center"
                         @click="showProfileMenu = !showProfileMenu"
                         @click.outside="showProfileMenu = false"
+                        data-test="profile-menu-trigger"
                     >
                         <iconify-icon
                             icon="mdi:account"

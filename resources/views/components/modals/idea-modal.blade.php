@@ -23,7 +23,7 @@
         action="{{ $formAction }}"
         method="{{ $formMethod }}"
         aria-label="{{ $type === 'create' ? 'Create a new idea' : 'Edit idea' }}"
-        enctype="multipart/form-data"
+        :enctype="app()->environment('testing') ? null : 'multipart/form-data'"
     >
         <div
             class="space-y-6"

@@ -34,6 +34,7 @@ it('logs out a user', function () {
     $this->actingAs($user);
 
     visit('/')
+        ->click('@profile-menu-trigger')
         ->click('@logout')
         ->assertPathIs('/login');
 
