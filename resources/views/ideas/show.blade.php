@@ -74,42 +74,15 @@
                         Remove Image</button>
                 </div>
             @endif
+
+            <x-status-label :status="$idea->status">
+                {{ $idea->status->label() }}
+            </x-status-label>
             <h1 class="text-foreground text-3xl font-bold mb-6">{{ $idea->title }}</h1>
-            <div class="flex items-center justify-between">
+            <div class="mt-2 flex gap-x-3 items-center justify-end w-full">
 
-                <div class="mt-2 flex gap-x-3 items-center">
-                    <x-status-label :status="$idea->status">
-                        {{ $idea->status->label() }}
-                    </x-status-label>
-
-                    <div class="flex items-center gap-x-2 text-sm text-muted-foreground">
-                        <span>{{ $idea->created_at->diffForHumans() }}</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-1">
-                    <x-user-avatar
-                        :user="$idea->user"
-                        size="6"
-                    />
-                    <span class="ml-2 text-sm text-muted-foreground">{{ $idea->user->name }}</span>
-                    <span class="text-muted-foreground text-sm">in</span>
-                    <span class="text-sm text-muted-foreground">
-                        @if ($idea->team)
-                            <a
-                                href="{{ route('teams.show', $idea->team->id) }}"
-                                class="text-sm text-primary/70 hover:underline"
-                                onclick="event.stopPropagation()"
-                            >
-                                {{ $idea->team->name }}
-                            </a>
-                        @endif
-                    </span>
-                </div>
-            </div>
-
-            {{-- Assigned to --}}
-            @if ($idea->team)
-                <div class="w-full flex justify-end">
+                {{-- Assigned to --}}
+                @if ($idea->team)
                     <x-form.form
                         action="{{ route('ideas.update-assignee', $idea->id) }}"
                         method="PATCH"
@@ -130,8 +103,9 @@
                             class="min-w-60"
                         />
                     </x-form.form>
-                </div>
-            @endif
+                @endif
+
+            </div>
 
             @if ($idea->description)
                 <x-card
@@ -196,6 +170,33 @@
                     </div>
                 </div>
             @endif
+
+            <div class="flex items-center gap-x-2 w-full justify-between">
+                <div class="flex gap-1 items-center">
+                    <x-user-avatar
+                        :user="$idea->user"
+                        size="6"
+                    />
+                    <span class="ml-1 text-sm text-muted-foreground">{{ $idea->user->name }}</span>
+                    <span class="text-muted-foreground text-sm">in</span>
+                    <span class="text-sm text-muted-foreground">
+                        @if ($idea->team)
+                            <a
+                                href="{{ route('teams.show', $idea->team->id) }}"
+                                class="text-sm text-primary/70 hover:underline"
+                                onclick="event.stopPropagation()"
+                            >
+                                {{ $idea->team->name }}
+                            </a>
+                        @endif
+                    </span>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <div class="flex items-center gap-x-2 text-sm text-muted-foreground">
+                        <span>{{ $idea->created_at->diffForHumans() }}</span>
+                    </div>
+                </div>
+            </div>
 
             <div>
                 <h3 class="text-foreground text-xl font-bold my-4">Comments</h3>

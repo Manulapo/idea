@@ -63,6 +63,7 @@
                     search-placeholder="Search teams"
                     empty-message="No teams found."
                     :multiple="false"
+                    class="w-80"
                 />
             @endif
 

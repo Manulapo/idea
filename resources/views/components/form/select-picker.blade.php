@@ -177,7 +177,7 @@
 
     <div class="relative">
         <div
-            class="daisy-select daisy-select-bordered !bg-card !border-border !text-foreground !rounded-xl h-auto min-h-10 py-2 cursor-pointer text-left flex items-center justify-between"
+            class="daisy-select daisy-select-bordered !bg-card !border-border !text-foreground !rounded-xl h-auto min-h-10 py-2 cursor-pointer text-left flex items-center justify-between w-full"
             x-ref="trigger"
             role="button"
             tabindex="0"
