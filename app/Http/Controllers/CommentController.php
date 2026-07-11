@@ -8,6 +8,7 @@ use App\Http\Requests\StoreCommentRequest;
 use App\Models\Comment;
 use App\Models\Idea;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class CommentController extends Controller
 {
@@ -32,6 +33,8 @@ class CommentController extends Controller
      */
     public function store(StoreCommentRequest $request, Idea $idea)
     {
+        Gate::authorize('workWith', $idea);
+
         $data = $request->validated();
         $user = Auth::user();
 
@@ -66,6 +69,8 @@ class CommentController extends Controller
      */
     public function update(StoreCommentRequest $request, Comment $comment)
     {
+        Gate::authorize('editComment', $comment->idea);
+
         $data = $request->validated();
         $comment->update($data);
 
@@ -77,7 +82,7 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        // add validation to check if the user is the owner of the comment
+        Gate::authorize('deleteComment', $comment->idea);
 
         $comment->delete();
 

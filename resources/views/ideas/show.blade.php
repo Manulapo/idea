@@ -41,7 +41,7 @@
             @endif
         </div>
 
-        <div class="py-8 space-y-6">
+        <div class="py-8 space-y-12">
             @if ($idea->image_path)
                 <div class="rounded-lg overflow-hidden relative group">
                     <img

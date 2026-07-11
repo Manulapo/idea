@@ -122,7 +122,7 @@ class IdeaController extends Controller
     public function destroy(Idea $idea)
     {
         // the gate facade autorize method work s well with the policy file. In that IdeaPolicy.php i set the workWith method to check if the user is the owner of the idea. If not, it will throw an exception and return a 403 error.
-        Gate::authorize('editIdea', $idea);
+        Gate::authorize('deleteIdea', $idea);
         $idea->delete();
 
         // we can also use the can method directly into the route or the blade file to check if the user can work with the idea. If not, it will return a 403 error.
