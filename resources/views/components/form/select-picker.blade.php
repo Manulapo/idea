@@ -41,6 +41,7 @@
         open: false,
         query: '',
         dropdownStyles: '',
+        optionsMaxHeight: 224,
         menuId: @js($menuId),
         options: @js($normalizedOptions),
         selected: @js($selectedValues),
@@ -68,14 +69,37 @@
             }
     
             const trigger = this.$refs.trigger;
+            const menu = this.$refs.menu;
     
-            if (!trigger) {
+            if (!trigger || !menu) {
                 return;
             }
     
+            const viewportPadding = 16;
+            const dropdownOffset = 8;
             const triggerRect = trigger.getBoundingClientRect();
+            const menuHeight = menu.offsetHeight || 320;
+            const menuWidth = Math.min(triggerRect.width, window.innerWidth - viewportPadding * 2);
+            const spaceBelow = window.innerHeight - triggerRect.bottom - dropdownOffset - viewportPadding;
+            const spaceAbove = triggerRect.top - dropdownOffset - viewportPadding;
+            const shouldOpenUp = spaceBelow < 260 && spaceAbove > spaceBelow;
+            const availableVerticalSpace = Math.max(180, shouldOpenUp ? spaceAbove : spaceBelow);
+            const renderedMenuHeight = Math.min(menuHeight, availableVerticalSpace);
+
+            const unclampedTop = shouldOpenUp
+                ? triggerRect.top - dropdownOffset - renderedMenuHeight
+                : triggerRect.bottom + dropdownOffset;
+
+            const maxTop = window.innerHeight - viewportPadding - renderedMenuHeight;
+            const top = Math.max(viewportPadding, Math.min(unclampedTop, maxTop));
+            const left = Math.max(
+                viewportPadding,
+                Math.min(triggerRect.left, window.innerWidth - viewportPadding - menuWidth)
+            );
+
+            this.optionsMaxHeight = Math.max(96, availableVerticalSpace - 120);
     
-            this.dropdownStyles = `position: fixed; left: ${triggerRect.left}px; top: ${triggerRect.bottom + 8}px; width: ${triggerRect.width}px;`;
+            this.dropdownStyles = `position: fixed; left: ${left}px; top: ${top}px; width: ${menuWidth}px; max-height: ${availableVerticalSpace}px;`;
         },
         handleWindowClick(event) {
             if (!this.open) {
@@ -194,7 +218,7 @@
                 x-cloak
                 x-ref="menu"
                 :style="dropdownStyles"
-                class="z-70 space-y-3 rounded-xl border border-border bg-card p-3 shadow-2xl"
+                class="z-70 flex flex-col space-y-3 overflow-hidden rounded-xl border border-border bg-card p-3 shadow-2xl"
             >
                 <input
                     id="{{ $inputId }}-search"
@@ -205,7 +229,10 @@
                     placeholder="{{ $searchPlaceholder }}"
                 >
 
-                <div class="max-h-56 space-y-1 overflow-y-auto pr-1">
+                <div
+                    class="space-y-1 overflow-y-auto pr-1"
+                    :style="`max-height: ${optionsMaxHeight}px;`"
+                >
                     <template x-if="filteredOptions.length === 0">
                         <p class="px-3 py-2 text-sm text-muted-foreground">{{ $emptyMessage }}</p>
                     </template>

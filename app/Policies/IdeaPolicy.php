@@ -26,8 +26,9 @@ class IdeaPolicy
     public function editIdea(User $user, Idea $idea): bool
     {
         $isUserOwner = $idea->user->is($user);
+        $isUserInIdeaTeam = $user->teams()->whereKey($idea->team_id)->exists();
 
-        return $isUserOwner;
+        return $isUserOwner || $isUserInIdeaTeam;
     }
 
     /**

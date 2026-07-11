@@ -1,4 +1,4 @@
-<nav class="border-b border-border px-6 fixed top-0 left-0 right-0 bg-background z-50">
+<nav class="border-b border-border px-6 fixed top-0 left-0 right-0 bg-background-nav z-50">
     <div class="max-w-7xl mx-auto h-16 flex justify-between items-center">
         <div>
             <a href="/"><x-layout.logo /></a>

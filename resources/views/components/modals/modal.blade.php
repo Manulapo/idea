@@ -25,7 +25,7 @@
 >
     <x-card
         is="div"
-        class="w-full max-w-2xl max-h-[80dvh] overflow-auto relative"
+        class="w-full max-w-2xl max-h-[80dvh] relative"
     >
         <div>
             <h2
@@ -47,7 +47,7 @@
                 ></iconify-icon>
             </button>
         </div>
-        <div>
+        <div class="overflow-y-auto max-h-[70dvh]">
             {{ $slot }}
         </div>
     </x-card>
