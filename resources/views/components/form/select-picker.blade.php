@@ -9,6 +9,8 @@
     'emptyMessage' => 'No options found.',
     'optionValueKey' => 'id',
     'optionLabelKey' => 'name',
+    'withAvatars' => false,
+    'optionAvatarKey' => 'avatar',
 ])
 
 @php
@@ -21,10 +23,11 @@
     $selectedValues = $selectedValues->map(fn($selectedValue) => (string) $selectedValue)->values()->all();
 
     $normalizedOptions = collect($options)
-        ->map(function ($option) use ($optionValueKey, $optionLabelKey) {
+        ->map(function ($option) use ($optionValueKey, $optionLabelKey, $optionAvatarKey) {
             return [
                 'id' => (string) data_get($option, $optionValueKey),
                 'name' => (string) data_get($option, $optionLabelKey),
+                'avatar' => data_get($option, $optionAvatarKey),
             ];
         })
         ->filter(fn(array $option) => filled($option['id']) && filled($option['name']))
@@ -46,6 +49,7 @@
         options: @js($normalizedOptions),
         selected: @js($selectedValues),
         multiple: @js($multiple),
+        withAvatars: @js($withAvatars),
         toggleOpen() {
             this.open = !this.open;
     
@@ -55,7 +59,7 @@
     
             this.$nextTick(() => {
                 this.updateDropdownPosition();
-                this.$refs.searchInput?.focus();
+                this.$refs.searchInput?.focus({ preventScroll: true });
             });
         },
         close() {
@@ -163,12 +167,14 @@
 >
     <label
         for="{{ $inputId }}-search"
-        class="label text-start"
-    >{{ $label }}</label>
+        class="daisy-label text-start"
+    >
+        <span class="daisy-label-text text-foreground font-semibold">{{ $label }}</span>
+    </label>
 
     <div class="relative">
         <div
-            class="input h-auto min-h-10 cursor-pointer text-left"
+            class="daisy-select daisy-select-bordered !bg-card !border-border !text-foreground h-auto min-h-10 py-2 cursor-pointer text-left flex items-center justify-between"
             x-ref="trigger"
             role="button"
             tabindex="0"
@@ -178,35 +184,50 @@
             :aria-expanded="open ? 'true' : 'false'"
             :aria-controls="menuId"
         >
-            <template x-if="selected.length === 0">
-                <span class="text-muted-foreground">{{ $placeholder }}</span>
-            </template>
-
-            <template x-if="!multiple && selected.length > 0">
-                <span x-text="selectedLabel(selected[0])"></span>
-            </template>
-
-            <div
-                x-show="multiple && selected.length > 0"
-                class="flex flex-wrap gap-2"
-                x-cloak
-            >
-                <template
-                    x-for="selectedId in selected"
-                    :key="selectedId"
-                >
-                    <span
-                        class="inline-flex items-center gap-1 rounded-full border border-border bg-background px-3 py-1 text-sm"
-                    >
-                        <span x-text="selectedLabel(selectedId)"></span>
-                        <button
-                            type="button"
-                            class="form-muted-icon"
-                            @click.stop="remove(selectedId)"
-                            :aria-label="`Remove ${selectedLabel(selectedId)}`"
-                        >x</button>
-                    </span>
+            <div class="flex flex-wrap gap-2 pr-4">
+                <template x-if="selected.length === 0">
+                    <span class="text-muted-foreground">{{ $placeholder }}</span>
                 </template>
+
+                <template x-if="!multiple && selected.length > 0">
+                    <span x-text="selectedLabel(selected[0])"></span>
+                </template>
+
+                <div
+                    x-show="multiple && selected.length > 0"
+                    class="flex flex-wrap gap-2"
+                    x-cloak
+                >
+                    <template
+                        x-for="selectedId in selected"
+                        :key="selectedId"
+                    >
+                        <span class="daisy-badge daisy-badge-outline gap-1.5 py-3 pl-3 pr-2 text-sm">
+                            <span x-text="selectedLabel(selectedId)"></span>
+                            <button
+                                type="button"
+                                class="daisy-btn daisy-btn-ghost daisy-btn-xs min-h-0 h-4 w-4 p-0 text-muted-foreground hover:text-foreground"
+                                @click.stop="remove(selectedId)"
+                                :aria-label="`Remove ${selectedLabel(selectedId)}`"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="h-3 w-3"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+                        </span>
+                    </template>
+                </div>
             </div>
         </div>
 
@@ -223,55 +244,86 @@
                 <input
                     id="{{ $inputId }}-search"
                     type="text"
-                    class="input h-9"
+                    class="daisy-input daisy-input-bordered daisy-input-sm w-full"
                     x-model="query"
                     x-ref="searchInput"
                     placeholder="{{ $searchPlaceholder }}"
                 >
 
-                <div
-                    class="space-y-1 overflow-y-auto pr-1"
+                <ul
+                    class="daisy-menu daisy-menu-sm p-0 space-y-0.5 overflow-y-auto pr-1 w-full"
                     :style="`max-height: ${optionsMaxHeight}px;`"
                 >
                     <template x-if="filteredOptions.length === 0">
-                        <p class="px-3 py-2 text-sm text-muted-foreground">{{ $emptyMessage }}</p>
+                        <li><span class="text-muted-foreground">{{ $emptyMessage }}</span></li>
                     </template>
 
                     <template
                         x-for="option in filteredOptions"
                         :key="option.id"
                     >
-                        <button
-                            type="button"
-                            class="flex w-full items-center justify-between rounded-lg border border-transparent px-3 py-2 text-left text-sm transition hover:border-border hover:bg-background"
-                            @click="toggle(option.id)"
-                        >
-                            <span x-text="option.name"></span>
-                            <span
-                                class="inline-flex h-5 w-5 items-center justify-center rounded-md border border-border bg-background"
-                                :class="isSelected(option.id) ? 'border-primary text-primary' : 'text-transparent'"
+                        <li>
+                            <button
+                                type="button"
+                                class="flex items-center justify-between rounded-lg px-3 py-2 text-left"
+                                @click="toggle(option.id)"
                             >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20"
-                                    fill="currentColor"
-                                    class="h-4 w-4"
-                                >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M16.704 5.29a1 1 0 0 1 .006 1.414l-8 8a1 1 0 0 1-1.42-.004l-4-4a1 1 0 0 1 1.414-1.414l3.294 3.293 7.296-7.295a1 1 0 0 1 1.41.006Z"
-                                        clip-rule="evenodd"
+                                <span class="flex items-center gap-2">
+                                    <template x-if="withAvatars">
+                                        <span>
+                                            <template x-if="option.avatar">
+                                                <img
+                                                    :src="option.avatar"
+                                                    :alt="option.name"
+                                                    class="w-6 h-6 rounded-full object-cover"
+                                                />
+                                            </template>
+                                            <template x-if="!option.avatar">
+                                                <span
+                                                    class="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold"
+                                                    x-text="option.name.charAt(0).toUpperCase()"
+                                                ></span>
+                                            </template>
+                                        </span>
+                                    </template>
+                                    <span x-text="option.name"></span>
+                                </span>
+                                <template x-if="multiple">
+                                    <input
+                                        type="checkbox"
+                                        class="daisy-checkbox daisy-checkbox-primary daisy-checkbox-sm pointer-events-none"
+                                        :checked="isSelected(option.id)"
+                                        tabindex="-1"
                                     />
-                                </svg>
-                            </span>
-                        </button>
+                                </template>
+                                <template x-if="!multiple">
+                                    <span
+                                        x-show="isSelected(option.id)"
+                                        class="text-primary flex items-center justify-center"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                            class="h-5 w-5"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M16.704 5.29a1 1 0 0 1 .006 1.414l-8 8a1 1 0 0 1-1.42-.004l-4-4a1 1 0 0 1 1.414-1.414l3.294 3.293 7.296-7.295a1 1 0 0 1 1.41.006Z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                    </span>
+                                </template>
+                            </button>
+                        </li>
                     </template>
-                </div>
+                </ul>
 
-                <div class="flex justify-end">
+                <div class="flex justify-end pt-1 border-t border-border">
                     <button
                         type="button"
-                        class="btn btn-outlined h-8"
+                        class="daisy-btn daisy-btn-outline daisy-btn-xs"
                         @click="clearAll()"
                     >Clear</button>
                 </div>

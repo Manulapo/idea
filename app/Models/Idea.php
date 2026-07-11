@@ -51,6 +51,11 @@ class Idea extends Model
         return $this->belongsTo(Team::class);
     }
 
+    public function assignee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assignee_id'); // the second parameter specifies the foreign key column name in the ideas table that references the users table. In this case, it's 'assignee_id'.
+    }
+
     public static function statusCounts(): Collection
     {
         /** @var User $user */

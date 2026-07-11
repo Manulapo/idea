@@ -47,7 +47,7 @@
                 ></iconify-icon>
             </button>
         </div>
-        <div class="overflow-y-auto max-h-[70dvh]">
+        <div class="overflow-y-auto max-h-[70dvh] pr-4">
             {{ $slot }}
         </div>
     </x-card>

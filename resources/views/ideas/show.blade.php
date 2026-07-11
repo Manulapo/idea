@@ -1,3 +1,13 @@
+@php
+    $assigneesOptions = $idea->team->users->map(
+        fn($user) => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'avatar' => $user->image_path ? asset('storage/' . $user->image_path) : null,
+        ],
+    );
+@endphp
+
 <x-layout.layout>
     <div class="py-8 max-w-4xl mx-auto">
         <div class="flex justify-between items-center gap-2">
@@ -96,6 +106,24 @@
                     </span>
                 </div>
             </div>
+
+            {{-- Assigned to --}}
+            @if ($idea->team)
+                <div>
+                    <x-form.select-picker
+                        name="assignee_id"
+                        label="Assignee"
+                        :options="$assigneesOptions"
+                        :value="$idea->assignee ? $idea->assignee->name : null"
+                        placeholder="Assign to a member"
+                        search-placeholder="Search members"
+                        empty-message="No members found."
+                        :multiple="false"
+                        :with-avatars="true"
+                    />
+                </div>
+            @endif
+
             @if ($idea->description)
                 <x-card
                     is="div"

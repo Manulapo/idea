@@ -1,4 +1,8 @@
 @import "tailwindcss";
+@plugin "daisyui" {
+    exclude: rootcolor, scrollbar;
+    prefix: "daisy-";
+}
 
 /* layer Components help to group related styles together and control their order of application.
    This is useful for managing the cascade and ensuring that component styles are applied correctly.
@@ -46,6 +50,15 @@
     --color-border: oklch(0.24 0 0);
     --color-input: oklch(0.24 0 0);
     --color-muted-foreground: oklch(0.6 0 0);
+
+    /* daisyUI v5 semantic color mappings */
+    --color-base-100: var(--color-card);
+    --color-base-200: oklch(0.19 0 0);
+    --color-base-300: var(--color-border);
+    --color-base-content: var(--color-foreground);
+    --color-primary-content: var(--color-primary-foreground);
+    --color-neutral: var(--color-card);
+    --color-neutral-content: var(--color-foreground);
 }
 
 @layer base {

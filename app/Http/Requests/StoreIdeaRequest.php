@@ -39,6 +39,7 @@ class StoreIdeaRequest extends FormRequest
             'steps.*.completed' => ['required', 'boolean'],
             'image' => ['nullable', 'image', 'max:5120'], // max size in kilobytes (5MB)
             'remove_image' => ['nullable', 'boolean'], // to handle image removal
+            'assignee_id' => ['nullable', 'integer', 'exists:users,id'], // validate that the assignee_id exists in the users table
         ];
     }
 
@@ -54,6 +55,7 @@ class StoreIdeaRequest extends FormRequest
             'steps' => $this->input('steps', []),
             'remove_image' => filter_var($this->input('remove_image', false), FILTER_VALIDATE_BOOLEAN),
             'team_id' => $this->input('team_id') ? (int) $this->input('team_id') : null,
+            'assignee_id' => $this->input('assignee_id') ? (int) $this->input('assignee_id') : null,
         ]);
     }
 }

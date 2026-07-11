@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Team::class);
+            $table->foreignIdFor(User::class, 'assignee_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('title');
             $table->text('description')->nullable();
             $table->json('links')->default('[]');
