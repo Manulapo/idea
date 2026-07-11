@@ -38,6 +38,15 @@
             }"
         >
 
+            <x-form.form-field
+                name="title"
+                label="Title"
+                type="text"
+                placeholder="Enter a title for you idea"
+                :value="$idea->title"
+                required
+            />
+
             @if ($shouldHideTeamField)
                 <input
                     type="hidden"
@@ -54,17 +63,9 @@
                     search-placeholder="Search teams"
                     empty-message="No teams found."
                     :multiple="false"
+                    class="w-80"
                 />
             @endif
-
-            <x-form.form-field
-                name="title"
-                label="Title"
-                type="text"
-                placeholder="Enter a title for you idea"
-                :value="$idea->title"
-                required
-            />
 
             <div class="space-y-2">
                 <label

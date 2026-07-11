@@ -42,6 +42,7 @@
             search-placeholder="Search participants"
             empty-message="No participants found."
             multiple
+            class="min-w-60 w-full"
         />
 
         <div class="w-full flex justify-end">

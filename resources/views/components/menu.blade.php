@@ -13,7 +13,7 @@
     {{ $attributes->merge(['class' => 'menu bg-base-200 rounded-box absolute right-0 top-12 w-52 p-1 shadow-lg z-50 space-y-1']) }}
 >
     <ul
-        class="dropdown-content menu shadow bg-base-100 rounded-box space-y-2"
+        class="dropdown-content menu shadow rounded-box space-y-2"
         role="menu"
     >
         {{ $slot }}

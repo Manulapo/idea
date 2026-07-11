@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Idea;
-use App\Models\User;
 use App\Models\Team;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -23,6 +23,7 @@ class IdeaFactory extends Factory
             'user_id' => User::factory(),
             'team_id' => Team::factory(),
             'title' => fake()->sentence(),
+            'assignee_id' => User::factory(),
             'description' => fake()->paragraph(),
             'links' => [fake()->url()],
         ];
