@@ -15,6 +15,7 @@
 ])
 
 @php
+    $hasLabel = filled($label);
     $selectedValues = collect(old($name, $value ?? ($multiple ? [] : null)));
 
     if (!$multiple) {
@@ -40,7 +41,7 @@
 @endphp
 
 <div
-    {{ $attributes->merge(['class' => 'space-y-3']) }}
+    {{ $attributes->merge(['class' => $hasLabel ? 'space-y-3' : '']) }}
     x-data="{
         open: false,
         query: '',
@@ -168,12 +169,14 @@
     @resize.window="updateDropdownPosition()"
     @scroll.window="updateDropdownPosition()"
 >
-    <label
-        for="{{ $inputId }}-search"
-        class="daisy-label text-start"
-    >
-        <span class="daisy-label-text text-foreground font-semibold">{{ $label }}</span>
-    </label>
+    @if ($hasLabel)
+        <label
+            for="{{ $inputId }}-search"
+            class="daisy-label text-start"
+        >
+            <span class="daisy-label-text text-foreground font-semibold">{{ $label }}</span>
+        </label>
+    @endif
 
     <div class="relative">
         <div

@@ -13,7 +13,7 @@ class UpdateIdea
     public function handle(array $attributes, Idea $idea): void
     {
         // i want everything from the validated request except the steps. tht belogns to a different table
-        $data = collect($attributes)->only(['title', 'description', 'links', 'status', 'team_id'])->toArray();
+        $data = collect($attributes)->only(['title', 'description', 'links', 'status', 'team_id', 'due_date'])->toArray();
 
         // handle the image
         if ($attributes['image'] ?? false) {

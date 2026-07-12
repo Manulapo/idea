@@ -40,6 +40,7 @@ class StoreIdeaRequest extends FormRequest
             'image' => ['nullable', 'image', 'max:5120'], // max size in kilobytes (5MB)
             'remove_image' => ['nullable', 'boolean'], // to handle image removal
             'assignee_id' => ['nullable', 'integer', 'exists:users,id'], // validate that the assignee_id exists in the users table
+            'due_date' => ['nullable', 'date'], // validate that the due_date is a valid date
         ];
     }
 
@@ -56,6 +57,7 @@ class StoreIdeaRequest extends FormRequest
             'remove_image' => filter_var($this->input('remove_image', false), FILTER_VALIDATE_BOOLEAN),
             'team_id' => $this->input('team_id') ? (int) $this->input('team_id') : null,
             'assignee_id' => $this->input('assignee_id') ? (int) $this->input('assignee_id') : null,
+            'due_date' => $this->input('due_date') ? (string) $this->input('due_date') : null,
         ]);
     }
 }

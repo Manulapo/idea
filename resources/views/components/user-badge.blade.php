@@ -10,7 +10,7 @@
 @endphp
 
 <div
-    {{ $attributes->merge(['class' => 'inline-flex items-center gap-3 rounded-full border border-border bg-white/5 px-2 py-1 text-sm text-foreground w-full']) }}>
+    {{ $attributes->merge(['class' => 'inline-flex items-center gap-3 rounded-full px-2 py-1 text-sm text-foreground w-full']) }}>
     <x-user-avatar
         :user="$user"
         size="8"
@@ -63,7 +63,7 @@
                         >
                             <button
                                 type="submit"
-                                class="text-red-400 flex items-center px-2 py-1 rounded-md"
+                                class="text-red-400 flex items-center px-2 py-1  text-lg pl-3 border-l ml-2 border-muted-foreground/20"
                                 aria-label="Remove user from team"
                             ><iconify-icon
                                     icon="mdi:delete"

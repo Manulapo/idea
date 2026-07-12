@@ -42,9 +42,18 @@
                 name="title"
                 label="Title"
                 type="text"
-                placeholder="Enter a title for you idea"
+                placeholder="Enter a title for your idea"
                 :value="$idea->title"
                 required
+            />
+
+            {{-- due date --}}
+            <x-form.form-field
+                name="due_date"
+                label="Deadline"
+                type="date"
+                placeholder="Select a date for your idea"
+                :value="$idea->due_date ? $idea->due_date->format('Y-m-d') : ''"
             />
 
             @if ($shouldHideTeamField)

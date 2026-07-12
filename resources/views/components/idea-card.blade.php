@@ -40,7 +40,7 @@
                         @if ($idea->team)
                             <a
                                 href="{{ route('teams.show', $idea->team->id) }}"
-                                class="text-sm text-primary/60 underline hover:underline"
+                                class="text-sm text-white/70 hover:underline"
                                 onclick="event.stopPropagation()"
                             >
                                 {{ $idea->team->name }}

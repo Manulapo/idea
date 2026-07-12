@@ -24,6 +24,7 @@ class Idea extends Model
     protected $casts = [
         'links' => AsArrayObject::class,
         'status' => IdeaStatus::class,
+        'due_date' => 'datetime',
     ];
 
     // this appends the status attribute to the model's array and JSON representations, so that it can be accessed like any other attribute. (even for factories)

@@ -31,6 +31,13 @@
         >
             {{ $slot }}
         </select>
+    @elseif ($type === 'date')
+        <input
+            name="{{ $name }}"
+            type="date"
+            class="input max-w-50"
+            value="{{ old($name, $value) }}"
+        />
     @else
         <input
             {{ $attributes->merge(['class' => 'input']) }}

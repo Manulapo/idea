@@ -26,6 +26,7 @@ class IdeaFactory extends Factory
             'assignee_id' => User::factory(),
             'description' => fake()->paragraph(),
             'links' => [fake()->url()],
+            'due_date' => fake()->date(),
         ];
     }
 }

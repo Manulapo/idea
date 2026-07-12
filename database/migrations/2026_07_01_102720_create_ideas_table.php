@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class, 'assignee_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('title');
             $table->text('description')->nullable();
+            $table->dateTime('due_date')->nullable();
             $table->json('links')->default('[]');
             $table->string('status')->default('pending');
             $table->string('image_path')->nullable();

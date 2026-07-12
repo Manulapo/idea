@@ -79,7 +79,20 @@
                 {{ $idea->status->label() }}
             </x-status-label>
             <h1 class="text-foreground text-3xl font-bold mb-6">{{ $idea->title }}</h1>
-            <div class="mt-2 flex gap-x-3 items-center justify-end w-full">
+            <div class="mt-2 flex gap-x-3 items-center justify-between w-full">
+                @if ($idea->due_date)
+                    <div class="text-sm text-muted-foreground mt-4 flex items-center">
+                        <iconify-icon
+                            icon="lucide:calendar"
+                            class="mr-2"
+                            width="16"
+                            height="16"
+                        ></iconify-icon>
+                        Deadline: <span class="text-foreground font-semibold ml-2">
+                            {{ \Illuminate\Support\Carbon::parse($idea->due_date)->format('F j, Y') }}
+                        </span>
+                    </div>
+                @endif
 
                 {{-- Assigned to --}}
                 @if ($idea->team)
@@ -156,7 +169,7 @@
                             <x-card
                                 href="{{ $link }}"
                                 target="_blank"
-                                class="flex items-center gap-2 space-y-2 mb-2"
+                                class="flex items-center gap-2"
                             >
                                 <iconify-icon
                                     icon="lucide:external-link"
@@ -177,13 +190,14 @@
                         :user="$idea->user"
                         size="6"
                     />
-                    <span class="ml-1 text-sm text-muted-foreground">{{ $idea->user->name }}</span>
+                    <span class="text-muted-foreground text-sm">Created by </span>
+                    <span class="text-sm text-muted-foreground">{{ $idea->user->name }}</span>
                     <span class="text-muted-foreground text-sm">in</span>
                     <span class="text-sm text-muted-foreground">
                         @if ($idea->team)
                             <a
                                 href="{{ route('teams.show', $idea->team->id) }}"
-                                class="text-sm text-primary/70 hover:underline"
+                                class="text-sm text-white hover:underline"
                                 onclick="event.stopPropagation()"
                             >
                                 {{ $idea->team->name }}
